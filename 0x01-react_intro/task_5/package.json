@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
     "start": "webpack-dev-server --mode development --config config/webpack.config.js"
