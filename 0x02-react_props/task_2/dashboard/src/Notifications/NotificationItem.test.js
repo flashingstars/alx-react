@@ -14,9 +14,9 @@ describe('<NotificationItem />', () => {
         expect(liElement.text()).toBe('test');
     });
 
-    test('renders HTML when html prop is passed', () => {
+    test('render HTML when html prop is passed', () => {
         const wrapper = shallow(
-            NotificationItem type='default' html={{ __html: '<u>test</u>' }} />
+            <NotificationItem type='default' html={{ __html: '<u>test</u>' }} />
         );
         const liElement = wrapper.find('li[data-notification-type]');
         expect(liElement.prop('data-notification-type')).toBe('default');
