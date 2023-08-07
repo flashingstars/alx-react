@@ -1,18 +1,20 @@
-import logo from './Holberton-logo.jpg';
+import React from 'react';
 import './App.css';
 import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
 import Footer from '../Footer/Footer';
+import CourseList from '../CourseList/CourseList';
+import PropTypes from 'prop-types';
 
-function App() {
+function App({ isLoggedIn }) {
   return (
-    <div className="App-body">
+    <div>
       <Notifications />
         <div className="App">
           <Header />
           <div className="App-body">
-            <Login />
+            {isLoggedIn ? <CourseList /> : <Login />}
           </div>
           <div className="App-footer">
             <Footer />
