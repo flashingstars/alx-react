@@ -8,12 +8,11 @@ import NotificationItemShape from "./NotificationItemShape";
 class Notifications extends Component {
   constructor(props) {
     super(props);
-
     this.markAsRead = this.markAsRead.bind(this);
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.length > this.props.listNotifications.length;
+    return nextProps.listNotifications.length > this.props.listNotifications.length;
   }
 
   markAsRead(id) {
