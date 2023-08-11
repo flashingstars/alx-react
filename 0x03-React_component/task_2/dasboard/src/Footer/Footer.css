@@ -1,0 +1,10 @@
+App.footer {
+    border-top: 3px solid red;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    font-style: italic;
+    margin-bottom: 0;
+    text-align: center;
+    font-family: 'Arial' sans-serif;
+}
