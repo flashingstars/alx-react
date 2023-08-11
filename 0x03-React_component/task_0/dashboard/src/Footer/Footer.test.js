@@ -7,7 +7,7 @@ describe('<Footer />', () => {
         shallow(<Footer />);
     });
 
-    test('renders withou crashing', () => {
+    test('renders the text "Copyright"', () => {
         const wrapper = shallow(<Footer />);
         expect(wrapper.text()).toContain('Copyright');
     });

@@ -9,7 +9,7 @@ describe('<Login />', () => {
 
     test('renders 2 input tags and 2 label tags', () => {
         const wrapper = shallow(<Login />);
-        expect(wrapper.find('input')).toHaveLength(2);
-        expect(wrapper.find('label')).toHaveLength(2);
+        expect(wrapper.find('input').length).toBe(2);
+        expect(wrapper.find('label').length).toBe(2);
     });
 });

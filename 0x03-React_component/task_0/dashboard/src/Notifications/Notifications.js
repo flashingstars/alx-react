@@ -1,49 +1,58 @@
 import React from 'react';
 import './Notifications.css';
-import closeIcon from './close-icon.png';
-import { getLatestNotification } from './utils';
+import closeIcon from './assets/close-icon.png';
+import { getLatestNotification } from './utils/utils';
 import NotificationItem from './NotificationItem';
 import PropTypes from 'prop-types';
+import NotificationItemShape from './NotificationItemShape';
 
-function Notifications({ displayDrawer }) {
+const Notifications = ({ displayDrawer, listNotifications }) => {
   return (
-    <React.Fragment>
-      {displayDrawer ? (
-        <div className="'flex-area'">
-          <div className="menuItem">
-            <p>Your notifications</p>
-        </div>
+    <>
+      <div className="menuItem"> Your notifications </div>
+      {displayDrawer && (
         <div className="Notifications">
           <button
-            style={{ color: "#3a3a3a", fontweight: "bold", background: "none", border: "none", fontsize: "10px", position: "absolute", right: "2px", top: "2px", cursor: "pointer" }}
+            style={{
+              position: 'absolute',
+              top: '0.25rem',
+              right: '0.25rem',
+              border: 'none',
+              backgroundColor: '#fff',
+            }}
             aria-label="Close"
-            onClick={console.log("Close button has been clicked")}
-            >
-              <img src={closeIcon} alt="close-icon" width= "10px" />  
+            onClick={() => console.log('Close button has been clicked')}
+          >
+            <img src={closeIcon} alt="close-icon" />
           </button>
-          <p>Here is the list of notifications</p>
-          <ul>
-            <NotificationItem type="default" value="New course available" />
-            <NotificationItem type="urgent" value="New resume available" />
-            <NotificationItem type="urgent" html={getLatestNotification()} />
-          </ul>
-        </div>
-      </div>
-      ) : (
-        <div className="menuItem">
-          <p>Your notifications</p>
+          {listNotifications.length === 0 ? (
+            <p>No new notification for now</p>
+          ) : (
+            <ul>
+              {listNotifications.map((notification) => (
+                <NotificationItem
+                  key={notification.id}
+                  type={notification.type}
+                  value={notification.value}
+                  html={notification.html}
+                />
+              ))}
+            </ul>
+          )}
         </div>
       )}
-    </React.Fragment>
+    </>
   );
-}
+};
       
 Notifications.propTypes = {
   displayDrawer: PropTypes.bool,
+  listNotifications: PropTypes.arrayOf(NotificationItemShape),
 };
 
 Notifications.defaultProps = {
   displayDrawer: false,
+  listNotifications: [],
 };
 
 export default Notifications;

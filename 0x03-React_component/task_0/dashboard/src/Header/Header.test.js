@@ -3,13 +3,13 @@ import { shallow } from 'enzyme';
 import Header from './Header';
 
 describe('<Header />', () => {
-    Test('Header component renders without crashing', () => {
+    it('Header component renders without crashing', () => {
         shallow(<Header />);
     });
 
-    Test('renders img and h1 tags', () => {
+    it('renders img and h1 tags', () => {
         const wrapper = shallow(<Header />);
-        expect(wrapper.find('img')).toHaveLength(1);
-        expect(wrapper.find('h1')).toHaveLength(1);
+        expect(wrapper.find('img').length).toBe(1);
+        expect(wrapper.find('h1').length).toBe(1);
     });
 });
