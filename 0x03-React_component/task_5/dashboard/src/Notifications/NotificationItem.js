@@ -12,7 +12,9 @@ class NotificationItem extends React.PureComponent {
             {value}
             </li>
         ) : null}
-        {html ? <li onClick={() => markAsRead(id)} data-urgent dangerouslySetInnerHTML={{__html: html }}></li> : null}
+        {html ? (
+          <li onClick={() => markAsRead(id)} data-urgent dangerouslySetInnerHTML={{ __html: html }}></li>
+        ) : null}
       </>
     );
   }
@@ -21,8 +23,8 @@ class NotificationItem extends React.PureComponent {
 NotificationItem.propTypes = {
   type: PropTypes.string.isRequired,
   value: PropTypes.string,
-  __html: PropTypes.shape({
-    html: PropTypes.string,
+  html: PropTypes.shape({
+    __html: PropTypes.string,
   }),
   markAsRead: PropTypes.func,
   id: PropTypes.number,
