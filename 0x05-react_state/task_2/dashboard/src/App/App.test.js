@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import { shallow } from 'enzyme';
 import App from './App';
@@ -42,35 +43,27 @@ describe('<App />', () => {
     expect(wrapper.find(Footer).length).toBe(1);
   });
 
-  it('does not render the CourseList component when isLoggedIn is false', () => {
+  it('renders does not render the CourseList when isLoggedIn is false', () => {
     const wrapper = shallow(<App />);
     expect(wrapper.find(CourseList).length).toBe(0);
   });
 
-  it('has default state of displayDrawer set to false', () => {
+  it('should update displayDrawer state to true after calling handleDisplayDrawer', () => {
     const wrapper = shallow(<App />);
-    expect(wrapper.state('displayDrawer')).toBe(flase);
+    const instance = wrapper.instance();
+    instance.handleDisplayDrawer();
+    expect(wrapper.state('displayDrawer')).toBe(false);
   });
 
-  it('updates state to true when handleDisplayDrawer is called', () => {
+  it('should update displayDrawer state to false after calling handleHideDrawer', () => {
     const wrapper = shallow(<App />);
-    expect(wrapper.state('displayDrawer')).toBe(true);
-  });
-
-  it('updates state to false when handlerHideDrawer is called', () => {
-    const wrapper = shallow(<App />);
-    wrapper.setState({ displayDrawer: true});
-    wrapper.instance().handleHideDrawer();
+    const instance = wrapper.instance();
+    instance.handleDisplayDrawer();
     expect(wrapper.state('displayDrawer')).toBe(false);
   });
 
   describe('when isLoggedIn is true', () => {
     it('does not render the Login component', () => {
-      const wrapper = shallow(<App isLoggedIn={true} />);
-      expect(wrapper.find(Login).length).toBe(0);
-    });
-
-    it('renders the CourseList component', () => {
       const wrapper = shallow(<App isLoggedIn={true} />);
       expect(wrapper.find(CourseList).length).toBe(1);
     });
@@ -78,11 +71,13 @@ describe('<App />', () => {
 
   describe('when the keys control and h are pressed', () => {
     let originalAlert;
+    let logOutMock;
 
     beforeEach(() => {
-      const logOutMock = jest.fn();
-      const wrapper = shallow(<App logOut={logOutMock} />);
+      logOutMock = jest.fn();
+      const wrapper = shallow(<App />);
       originalAlert = window.alert;
+      wrapper.setState({ logOut: logOutMock });
     });
 
     afterEach(() => {
@@ -99,6 +94,28 @@ describe('<App />', () => {
       window.alert = jest.fn();
       document.dispatchEvent(new KeyboardEvent('keydown', { ctrlKey: true, key: 'h' }));
       expect(window.alert).toHaveBeenCalledWith('Logging you out');
+    });
+
+    it('updates state correctly when logIn is called', () => {
+      const wrapper = shallow(<App />);
+      const instance = wrapper.instance();
+      instance.logIn('test@example.com', 'password');
+      expect(wrapper.state('user')).toEqual({
+        email: 'test@example.com',
+        password: 'password',
+        isLoggedIn: true
+      });
+    });
+
+    it('updates state correctly when logOut is called', () => {
+      const wrapper = shallow(<App />);
+      const instance = wrapper.instance();
+      instance.logOut();
+      expect(wrapper.state('user')).toEqual({
+        email: '',
+        password: '',
+        isLoggedIn: false
+      });
     });
   });
 });

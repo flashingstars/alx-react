@@ -6,9 +6,9 @@ import CourseList from "../CourseList/CourseList";
 import Notifications from "../Notifications/Notifications";
 import BodySectionWithMarginBottom from "../BodySection/BodySectionWithMarginBottom";
 import BodySection from "../BodySection/BodySection";
-import PropTypes from "prop-types";
 import { getLatestNotification } from "../utils/utils";
 import { StyleSheet, css } from "aphrodite";
+import { defaultUser, AppContext } from "./AppContext";
 
 class App extends React.Component {
   constructor(props) {
@@ -16,74 +16,78 @@ class App extends React.Component {
 
     this.state = {
       displayDrawer: false,
+      user: defaultUser,
+      logOut: () => {
+        this.setState({ user: defaultUser })
+      }
     }
 
 
-    this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
     this.handleHideDrawer = this.handleHideDrawer.bind(this);
+    this.logIn = this.logIn.bind(this);
   }
 
-  listCourses = [
-    { id: 1, name: "ES6", credit: 60 },
-    { id: 2, name: "Webpack", credit: 20 },
-    { id: 3, name: "React", credit: 40 },
-  ];
+  logIn (email, password) {
+    this.setState({ user: { email, password, isLoggedIn: true } })
+  }
 
-  listNotifications = [
-    { id: 1, type: "default", value: "New course available" },
-    { id: 2, type: "urgent", value: "New resume available" },
-    { id: 3, type: "urgent", html: getLatestNotification() },
-  ];
+  handleDisplayDrawer () {
+    this.setState({ displayDrawer: true })
+  }
 
-  handleKeyPress(e) {
+  handleHideDrawer () {
+    this.setState({ displayDrawer: false })
+  }
+
+  componentDidMount () {
+    window.addEventListener('keydown', this.handleKeydown)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('keydown', this.handleKeydown)
+  } 
+
+  handleKeydown = (e) => {
     if (e.ctrlKey && e.key === "h") {
-      e.preventDefault();
       alert("Logging you out");
-      this.props.logOut();
+      this.state.logOut();
     }
-  }
-
-  handleDisplayDrawer() {
-    this.setState({
-      displayDrawer: true,
-    });
-  }
-
-  handleHideDrawer() {
-    this.setState({
-      displayDrawer: false,
-    })
-  }
-
-  componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyPress);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyPress);
   }
 
   render() {
-  return (
-      <React.Fragment>
+    const listCourses = [
+      { id: 1, name: "ES6", credit: 60 },
+      { id: 2, name: "Webpack", credit: 20 },
+      { id: 3, name: "React", credit: 40 },
+    ];
+  
+    const listNotifications = [
+      { id: 1, type: "default", value: "New course available" },
+      { id: 2, type: "urgent", value: "New resume available" },
+      { id: 3, type: "urgent", html: getLatestNotification() },
+    ]
+
+    const v = { user: this.state.user, logOut: this.state.logOut }
+  
+    return (
+      <AppContext.Provider value={v}>
+        <Notifications 
+          listNotifications={listNotifications}
+          displayDrawer = {this.state.displayDrawer}
+          handleDisplayDrawer = {this.handleDisplayDrawer}
+          handleHideDrawer = {this.handleHideDrawer}
+        />
         <div className={css(styles.app)}>
-          <div className={css(styles.heading-section)}>
-            <Notifications 
-            listNotifications={this.listNotifications}
-            displayDrawer = {this.state.displayDrawer}
-            handleDisplayDrawer = {this.handleDisplayDrawer}
-            handleHideDrawer = {this.handleHideDrawer}
-            />
-            <Header />
-          </div>
-          {this.props.isLoggedIn ? (
+          <Header />
+          {this.state.user.isLoggedIn ? <hr className={css(styles.hr)}/> : null}
+          {this.state.user.isLoggedIn ? (
             <BodySectionWithMarginBottom title="Course list">
-              <CourseList listCourses={this.listCourses} />
+              <CourseList listCourses={listCourses} />
             </BodySectionWithMarginBottom>
           ) : (
             <BodySectionWithMarginBottom title="Log in to continue">
-              <Login />
+              <Login logIn={this.logIn} />
             </BodySectionWithMarginBottom>
           )}
           <BodySection title="News from the school">
@@ -92,32 +96,30 @@ class App extends React.Component {
               iste vero dolor voluptates.
             </p>
           </BodySection>
-          <Footer />
+          {/* <hr className={css(styles.hr)} /> */}
+          <Footer styles={[styles.footer]} />
         </div>
-      </React.Fragment>
-    );
+      </AppContext.Provider>
+    )
   }
 }
 
 const styles = StyleSheet.create({
-  app: {
-    height: '100vh',
-    maxWidth: '100vw',
-    position: 'relative',
-    fontFamily: 'Arial, Helvetica, sans-serif',
+  app: { fontFamily: 'Arial' },
+  
+  hr: {
+    height: '2px',
+    backgroundColor: 'e0344b',
+    border: 'none',
   },
+
+  footer: {
+    height: '50px',
+    fontStyle: 'italic',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });
 
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {
-    return;
-  },
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
-
-export default App;
+export default App

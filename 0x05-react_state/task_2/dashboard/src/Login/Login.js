@@ -1,37 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import propTypes from 'prop-types';
 
-function Login() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [enableSubmit, setEnableSubmit] = useState(false);
-    
-    const handleLoginSubmit = (e) => {
-        e.preventDefault();
-        setIsLoggedIn(true);
-    };
 
-    const handleChangeEmail = (e) => {
-        setEmail(e.target.value);
-    };
+class Login extends Component {
+    constructor (props) {
+        super(props)
 
-    const handleChangePassword = (e) => {
-        setPassword(e.target.value);
-    };
-
-    useEffect(() => {
-        if (email !== '' && password !== '') {
-            setEnableSubmit(true);
-        } else {
-            if (enableSubmit !== false) {
-                setEnableSubmit(false);
-            }
+        this.state = {
+            email: '',
+            password: '',
+            enableSubmit: false,
         }
-    }, [email, password]);
 
-    return (
-        <>
+        this.handleInputChange = this.handleInputChange.bind(this)
+        this.handleLoginSubmit = this.handleLoginSubmit.bind(this)
+    }
+
+    handleInputChange = event => {
+        const { name, value } = event.target
+        this.setState({
+            [name]: value,
+            enabledSubmit: this.state.email !== '' && this.state.password !== ''
+        })
+    }
+
+    handleLoginSubmit = event => {
+        event.preventDefault()
+        const { email, password } = this.state
+        if (email && password) {
+            this.props.logIn(email, password)
+        }
+    }
+
+    return () {
+        return (
             <div className={css(styles.App)}>
                 <div className={css(styles.AppBody)}>
                     <p>Login to access the full dashboard</p>
@@ -44,8 +47,8 @@ function Login() {
                             name="email" 
                             id="email" 
                             className={css(styles.input)}
-                            value={email}
-                            onChange={handleChangeEmail}  
+                            value={this.state.email}
+                            onChange={this.handleInputChange}  
                             />
                         </div>
 
@@ -56,20 +59,24 @@ function Login() {
                             name="password" 
                             id="password" 
                             className={css(styles.input)}
-                            value={password}
-                            onChange={handleChangePassword} 
+                            value={this.state.password}
+                            onChange={this.handleInputChange} 
                             />
                         </div>
                         <input 
-                        type='submit' 
-                        value='Ok' 
-                        disabled={!enableSubmit} 
+                            type='submit' 
+                            value='Ok' 
+                            disabled={!this.state.enabledSubmit} 
                         />
                     </form>
                 </div>  
             </div>
-        </>
-    )
+        )
+    }
+}
+
+Login.propTypes = {
+    logIn: propTypes.func.isRequired
 }
 
 const styles = StyleSheet.create({
